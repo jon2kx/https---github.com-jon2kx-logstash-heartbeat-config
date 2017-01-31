@@ -1,0 +1,20 @@
+input {
+  heartbeat {
+    # Setting interval to 120 seconds
+    interval => 120
+    type => "heartbeat"
+  }
+}
+
+output {
+# You can test this piece of functionality by replacing != with == and replacing the to: and from fields (use your domain, as email systems love to bounce generic looking things.
+        if [type] == "heartbeat" and [message] != "ok" {
+            email {
+                from => "logstash_alert@yourdomain.com"
+                subject => "Logstash heartbeat has failed..."
+                to => "maybe_pagerduty@domain.com"
+                via => "smtp"
+                body => "Logstash_input_heartbeat has detected failed which probably means logstash is not functioning properly, please bounce the service via sudo service logstash restart or systemctl restart logstash.service"
+        }
+    }
+}
